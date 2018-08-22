@@ -1,0 +1,3 @@
+PORT = '/dev/ttyAMA0'
+BAUD_RATE = '115200'
+TIMEOUT = 0.5
