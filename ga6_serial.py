@@ -93,3 +93,4 @@ class GA6Serial(serial.Serial):
 
 
 ser = GA6Serial(PORT, BAUD_RATE, timeout=TIMEOUT)
+#
