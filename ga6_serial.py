@@ -59,7 +59,7 @@ class GA6Serial(serial.Serial):
         self.write(b'AT+CSCS="GSM"\r\n')
 
     def set_msg_target(self, number):
-        self.write(b'AT+CMGS="%s"\r\n' % number)
+        self.write(f'AT+CMGS="{number}"\r\n')
 
     def set_msg_content(self, content):
         self.write(content.encode())
