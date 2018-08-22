@@ -34,7 +34,12 @@ class PDUConverter:
 
         }
 
-        return ''.join(smsc_info.values()) + ''.join(recevier_info.values()) + ''.join(content_info.values())
+        recevier_info_len = len(''.join(recevier_info.values()))
+        content_info_len = len(''.join(content_info.values()))
+        code_len = int((recevier_info_len + content_info_len)/2)
+
+        code = ''.join(smsc_info.values()) + ''.join(recevier_info.values()) + ''.join(content_info.values())
+        return code, code_len
 
     @staticmethod
     def __invert_number(number):

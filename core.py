@@ -1,13 +1,11 @@
 import serial
-from config import *
-import threading
 
 
-class GA6Serial(serial.Serial):
-    def check_serial(self):
+class GA6Core(serial.Serial):
+    def check_signal(self):
         self.write(b'AT\r\n')
 
-    def get_sim(self):
+    def get_sim_status(self):
         self.write(b'AT+CPIN?\r\n')
 
     def get_registration(self):
@@ -22,6 +20,21 @@ class GA6Serial(serial.Serial):
     def get_msg(self, num):
         num = str(num)
         self.write(f'AT+CMGR={num}\r\n'.encode())
+
+    def get_unread_msg(self):
+        self.write(b'AT+CMGL=0')
+
+    def get_read_msg(self):
+        self.write(b'AT+CMGL=1')
+
+    def get_draft_msg(self):
+        self.write(b'AT+CMGL=2')
+
+    def get_sent_msg(self):
+        self.write(b'AT+CMGL=3')
+
+    def get_all_msg(self):
+        self.write(b'AT+CMGL=4')
 
     def delete_msg(self, num):
         num = str(num)
@@ -76,7 +89,7 @@ class GA6Serial(serial.Serial):
     def set_msg_target(self, num):
         self.write(f'AT+CMGS="{num}"\r\n'.encode())
 
-    def set_msg_length(self, num):
+    def set_msg_len(self, num):
         num = str(num)
         self.write(f'AT+CMGS={num}\r\n'.encode())
 
@@ -90,7 +103,3 @@ class GA6Serial(serial.Serial):
 
     def send_msg(self):
         self.write(b'\x1A')
-
-
-ser = GA6Serial(PORT, BAUD_RATE, timeout=TIMEOUT)
-#
