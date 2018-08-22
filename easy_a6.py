@@ -19,5 +19,4 @@ class EasyA6(GA6Core):
         self.send_msg()
 
 
-# ser = EasyA6(PORT, BAUD_RATE, timeout=TIMEOUT)
 ser = EasyA6(PORT, BAUD_RATE, timeout=TIMEOUT)
