@@ -26,7 +26,7 @@ class GA6Serial(serial.Serial):
         self.write(f'AT+CMGR={num}\r\n'.encode())
 
     def dial(self, number):
-        self.write(b'ATD%s\r\n' % number)
+        self.write(f'ATD{number}\r\n'.encode())
 
     def pick_up(self):
         self.write(b'ATA\r\n')
@@ -59,7 +59,7 @@ class GA6Serial(serial.Serial):
         self.write(b'AT+CSCS="GSM"\r\n')
 
     def set_msg_target(self, number):
-        self.write(f'AT+CMGS="{number}"\r\n')
+        self.write(f'AT+CMGS="{number}"\r\n'.encode())
 
     def set_msg_content(self, content):
         self.write(content.encode())
@@ -69,7 +69,7 @@ class GA6Serial(serial.Serial):
 
 
 ser = GA6Serial('/dev/ttyAMA0', 115200, timeout=0.5)
-ser = GA6Serial(PORT, BAUD_RATE, timeout=TIMEOUT)
+# ser = GA6Serial(PORT, BAUD_RATE, timeout=TIMEOUT)
 
-ser.write('AT\r\n')
+ser.write(b'AT\r\n')
 ser.readline()
