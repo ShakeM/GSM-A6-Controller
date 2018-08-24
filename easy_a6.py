@@ -9,7 +9,7 @@ class EasyA6(GA6Core):
         super().__init__(*args, **kwargs)
         self.check_signal()
         self.display_caller_id()
-        self.smsc = '13010314500'
+        self.smsc = SMSC
 
     def send(self, recevier, content):
         self.set_mode_pdu()
