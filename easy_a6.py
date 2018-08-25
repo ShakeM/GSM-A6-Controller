@@ -29,14 +29,14 @@ class EasyA6(GA6Core):
         pass_time = 0
         sent = False
         while True:
-            if result in self.console.lines and sent == False:
+            if result in self.console.lines and not sent:
                 print(result)
                 sent = True
-            elif 'OK\r\n' in result and sent == True:
+            elif 'OK\r\n' in self.console.lines and sent:
                 print('Done')
                 break
-            elif [e for e in result if 'ERROR:' in e]:
-                print([e for e in result if 'ERROR:' in e])
+            elif [e for e in self.console.lines if 'ERROR:' in e]:
+                print([e for e in self.console.lines if 'ERROR:' in e])
                 break
             elif pass_time > timeout:
                 print('Timeout')
