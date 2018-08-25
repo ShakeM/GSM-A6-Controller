@@ -9,10 +9,10 @@ class EasyA6(GA6Core):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.reader = Console(self)
-        self.reader.start()
+        self.console = Console(self)
+        self.console.start()
 
-        self.wait(self.check_signal())
+        self.wait(self.check_signal)
         # self.display_caller_id()
         self.smsc = SMSC
 
@@ -29,7 +29,7 @@ class EasyA6(GA6Core):
         pass_time = 0
         sent = False
         while True:
-            if result in self.reader.lines and sent == False:
+            if result in self.console.lines and sent == False:
                 print(result)
                 sent = True
             elif 'OK\r\n' in result and sent == True:
