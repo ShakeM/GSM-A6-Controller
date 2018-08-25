@@ -22,4 +22,6 @@ class EasyA6(GA6Core):
 
 
 ser = EasyA6(PORT, BAUD_RATE, timeout=TIMEOUT)
-Console.start()
+
+reader = Console()
+reader.start()
