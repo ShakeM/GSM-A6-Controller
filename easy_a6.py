@@ -86,6 +86,7 @@ class EasyA6(GA6Core):
             self._consume_line(stop_line)
 
         self.console.lock = False
+        return self.ring
 
 
 ser = EasyA6(PORT, BAUD_RATE, timeout=READ_TIMEOUT)
