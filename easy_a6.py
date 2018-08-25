@@ -74,9 +74,10 @@ class EasyA6(GA6Core):
 
         caller_line = [line for line in self.console.lines if '+CLIP:' in line]
         if caller_line:
-            re_result = re.search('(?<=").*?(?=")', caller_line)
-            self.caller = re_result[0] if re_result else ''
-            self._consume_line(caller_line)
+            for l in caller_line:
+                re_result = re.search('(?<=").*?(?=")', l)
+                self.caller = re_result[0] if re_result else ''
+                self._consume_line(caller_line)
 
         stop = ['+CIEV: "CALL",0\r\n', 'NO CARRIER\r\n']
         stop_line = [line for line in self.console.lines if line in stop]
