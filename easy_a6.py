@@ -14,7 +14,7 @@ class EasyA6(GA6Core):
         self.console = Console(self)
         self.console.start()
 
-        self.ring = False
+        self.status = IDLE
         self.caller = ''
 
         self.wait(self.check_signal)
@@ -64,12 +64,12 @@ class EasyA6(GA6Core):
 
         self.console.lock = False
 
-    def check_ring(self):
+    def check_status(self):
         self.console.lock = True
 
         ring_line = [line for line in self.console.lines if line == 'RING\r\n']
         if ring_line:
-            self.ring = True
+            self.status = RING
             self._consume_line(ring_line)
 
         caller_line = [line for line in self.console.lines if '+CLIP:' in line]
@@ -79,10 +79,16 @@ class EasyA6(GA6Core):
                 self.caller = re_result[0] if re_result else ''
                 self._consume_line(caller_line)
 
+        talk = ['+CIEV: "CALL",1\r\n', 'CONNECT\r\n']
+        talk_line = [line for line in self.console.lines if line in talk]
+        if talk_line:
+            self.status = TALK
+            self._consume_line(talk_line)
+
         stop = ['+CIEV: "CALL",0\r\n', 'NO CARRIER\r\n']
         stop_line = [line for line in self.console.lines if line in stop]
         if stop_line:
-            self.ring = False
+            self.status = IDLE
             self._consume_line(stop_line)
 
         self.console.lock = False
