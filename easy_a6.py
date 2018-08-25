@@ -39,8 +39,8 @@ class EasyA6(GA6Core):
             elif 'OK\r\n' in self.console.lines and sent:
                 self._consume_line('OK\r\n')
                 break
-            elif [e for e in self.console.lines if 'ERROR:' in e]:
-                errors = [e for e in self.console.lines if 'ERROR:' in e]
+            elif [e for e in self.console.lines if 'ERROR' in e]:
+                errors = [e for e in self.console.lines if 'ERROR' in e]
                 print('Inner log:', errors)
                 for e in errors:
                     self._consume_line(e)
@@ -92,7 +92,7 @@ class EasyA6(GA6Core):
             self._consume_line(stop_line)
 
         self.console.lock = False
-        return self.ring
+        return self.status
 
 
 ser = EasyA6(PORT, BAUD_RATE, timeout=READ_TIMEOUT)
