@@ -4,15 +4,17 @@ from pdu_converter import PDUConverter
 from console import Console
 
 
-class EasyA6(GA6Core, Console):
+class EasyA6(GA6Core):
 
     def __init__(self, *args, **kwargs):
-        GA6Core.__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
+        self.record = []
+        self.reader = Console(self)
+        self.reader.start()
 
         self.check_signal()
         self.display_caller_id()
         self.smsc = SMSC
-        self.record = []
 
     def send(self, recevier, content):
         self.set_mode_pdu()
@@ -23,6 +25,3 @@ class EasyA6(GA6Core, Console):
 
 
 ser = EasyA6(PORT, BAUD_RATE, timeout=TIMEOUT)
-
-reader = Console(ser)
-reader.start()
