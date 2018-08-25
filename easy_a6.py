@@ -27,8 +27,11 @@ class EasyA6(GA6Core):
         self.set_msg_content(content)
         self.send_msg()
 
-    def wait(self, foo, timeout=RESPONSE_TIMEOUT):
-        result = foo()
+    def pick(self):
+        self.wait(self.pick_up)
+
+    def wait(self, foo, *args, timeout=RESPONSE_TIMEOUT):
+        result = foo(*args)
 
         pass_time = 0
         sent = False
@@ -64,7 +67,7 @@ class EasyA6(GA6Core):
 
         self.console.lock = False
 
-    def check_status(self):
+    def update_status(self):
         self.console.lock = True
 
         ring_line = [line for line in self.console.lines if line == 'RING\r\n']

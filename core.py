@@ -36,27 +36,27 @@ class GA6Core(serial.Serial):
         return instruction.decode()
 
     def get_unread_msg(self):
-        instruction = b'AT+CMGL=0'
+        instruction = b'AT+CMGL=0\r\n'
         self.write(instruction)
         return instruction.decode()
 
     def get_read_msg(self):
-        instruction = b'AT+CMGL=1'
+        instruction = b'AT+CMGL=1\r\n'
         self.write(instruction)
         return instruction.decode()
 
     def get_draft_msg(self):
-        instruction = b'AT+CMGL=2'
+        instruction = b'AT+CMGL=2\r\n'
         self.write(instruction)
         return instruction.decode()
 
     def get_sent_msg(self):
-        instruction = b'AT+CMGL=3'
+        instruction = b'AT+CMGL=3\r\n'
         self.write(instruction)
         return instruction.decode()
 
     def get_all_msg(self):
-        instruction = b'AT+CMGL=4'
+        instruction = b'AT+CMGL=4\r\n'
         self.write(instruction)
         return instruction.decode()
 
