@@ -17,7 +17,7 @@ class EasyA6(GA6Core):
         self.wait(self.check_signal)
         self.ring = False
         self.caller = ''
-        # self.display_caller_id()
+        ## self.display_caller_id()
 
     def send(self, recevier, content):
         self.set_mode_pdu()
