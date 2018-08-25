@@ -4,7 +4,7 @@ from pdu_converter import PDUConverter
 from console import Console
 
 
-class EasyA6(GA6Core):
+class EasyA6(GA6Core, Console):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
