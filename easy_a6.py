@@ -63,16 +63,12 @@ class EasyA6(GA6Core):
             time.sleep(0.2)
 
     def _consume_line(self, instruction):
-        self.console.lock = True
-
         if type(instruction) == str:
             instruction = [instruction]
 
         for i in instruction:
             while i in self.console.lines:
                 self.console.lines.remove(i)
-
-        self.console.lock = False
 
     def update_status(self):
         self.console.lock = True
