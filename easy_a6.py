@@ -58,7 +58,7 @@ class EasyA6(GA6Core):
 
         for i in instruction:
             while i in self.console.lines:
-                self.console.lines.remove()
+                self.console.lines.remove(i)
 
         self.console.lock = False
 
