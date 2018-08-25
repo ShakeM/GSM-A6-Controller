@@ -7,8 +7,7 @@ from console import Console
 class EasyA6(GA6Core, Console):
 
     def __init__(self, *args, **kwargs):
-        GA6Core.__init__(self, *args, **kwargs)
-        Console.__init__(self)
+        GA6Core.__init__(*args, **kwargs)
 
         self.check_signal()
         self.display_caller_id()
