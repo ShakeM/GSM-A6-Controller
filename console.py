@@ -6,9 +6,11 @@ class Console(threading.Thread):
         super().__init__()
         self.ser = serial
         self.lines = []
+        self.lock = False
 
     def run(self):
-        while True:
+        while True and not self.lock:
             line = self.ser.readline().decode()
             if line != '\r\n' and line != '':
                 self.lines.append(line)
+                print(line)

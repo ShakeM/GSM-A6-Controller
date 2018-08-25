@@ -6,6 +6,7 @@ class PDUConverter:
     # 上海联通中心号码SMSC 13010314500
     @classmethod
     def encode(cls, smsc, receiver, content):
+        receiver, content = str(receiver), str(content)
         smsc_info = {
             'address_length': '08',
             'type': '91',
@@ -36,15 +37,15 @@ class PDUConverter:
 
         recevier_info_len = len(''.join(recevier_info.values()))
         content_info_len = len(''.join(content_info.values()))
-        code_len = int((recevier_info_len + content_info_len)/2)
+        code_len = int((recevier_info_len + content_info_len) / 2)
 
         code = ''.join(smsc_info.values()) + ''.join(recevier_info.values()) + ''.join(content_info.values())
         return code, code_len
 
     @staticmethod
     def __invert_number(number):
+        number = list(str(number))
         even_point = 1
-        number = list(number)
         if len(number) % 2 == 1:
             number.append('F')
 

@@ -3,9 +3,11 @@ from core import GA6Core
 from pdu_converter import PDUConverter
 from console import Console
 import time
+import re
 
 
 class EasyA6(GA6Core):
+    smsc = SMSC
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -13,14 +15,15 @@ class EasyA6(GA6Core):
         self.console.start()
 
         self.wait(self.check_signal)
+        self.ring = False
+        self.caller = ''
         # self.display_caller_id()
-        self.smsc = SMSC
 
     def send(self, recevier, content):
         self.set_mode_pdu()
-        content, code_len = PDUConverter.encode(self.smsc, str(recevier), str(content))
-        self.set_msg_len(str(code_len))
-        self.set_msg_content(content.encode())
+        content, code_len = PDUConverter.encode(self.smsc, recevier, content)
+        self.set_msg_len(code_len)
+        self.set_msg_content(content)
         self.send_msg()
 
     def wait(self, foo, timeout=RESPONSE_TIMEOUT):
@@ -30,20 +33,38 @@ class EasyA6(GA6Core):
         sent = False
         while True:
             if result in self.console.lines and not sent:
-                print(result)
                 sent = True
             elif 'OK\r\n' in self.console.lines and sent:
-                print('Done')
+                self._consume_line('OK\r\n')
                 break
             elif [e for e in self.console.lines if 'ERROR:' in e]:
-                print([e for e in self.console.lines if 'ERROR:' in e])
+                errors = [e for e in self.console.lines if 'ERROR:' in e]
+                print('Inner log:', errors)
+                for e in errors:
+                    self._consume_line(e)
                 break
             elif pass_time > timeout:
-                print('Timeout')
+                print('Inner log:', 'Timeout')
                 break
 
             pass_time += 0.2
             time.sleep(0.2)
+
+    def _consume_line(self, instruction):
+        self.console.lock = True
+        while instruction in self.console.lines:
+            self.console.lines.remove(instruction)
+        self.console.lock = False
+
+    def check_ring(self):
+        if 'RING\r\n' in self.console.lines:
+            self.ring = True
+            self._consume_line('RING\r\n')
+
+        caller_line = [line for line in self.console.lines if '+CLIP:' in line]
+        if caller_line:
+            re_result = re.search('(?<=").*?(?=")', caller_line)
+            self.caller = re_result[0] if re_result else ''
 
 
 ser = EasyA6(PORT, BAUD_RATE, timeout=READ_TIMEOUT)
