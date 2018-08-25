@@ -14,9 +14,10 @@ class EasyA6(GA6Core):
         self.console = Console(self)
         self.console.start()
 
-        self.wait(self.check_signal)
         self.ring = False
         self.caller = ''
+
+        self.wait(self.check_signal)
         ## self.display_caller_id()
 
     def send(self, recevier, content):
