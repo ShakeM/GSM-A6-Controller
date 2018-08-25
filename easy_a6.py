@@ -25,20 +25,21 @@ class EasyA6(GA6Core):
         content, code_len = PDUConverter.encode(self.smsc, recevier, content)
         self.wait(self.set_msg_len, code_len, response='> ')
         self.wait(self.set_msg_content, content, response=None)
-        self.wait(self.send_msg, ignore='+CMGS: 0\r\n')
+        self.wait(self.send_msg, ignore=['+CMGS: 0\r\n', content + '\x1a'])
 
     def pick(self):
         self.wait(self.pick_up)
 
-    def wait(self, foo, *args, response='OK\r\n', ignore='', timeout=RESPONSE_TIMEOUT):
+    def wait(self, foo, *args, response='OK\r\n', ignore=[], timeout=RESPONSE_TIMEOUT):
         result = foo(*args)
 
         pass_time = 0
         while True:
             if result in self.console.lines:
                 self._consume_line(result)
-            if ignore in self.console.lines:
-                self._consume_line(ignore)
+            for i in ignore:
+                if i in self.console.lines:
+                    self._consume_line(i)
 
             if not response:
                 break
