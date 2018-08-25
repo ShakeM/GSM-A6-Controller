@@ -64,6 +64,8 @@ class EasyA6(GA6Core):
         self.console.lock = False
 
     def check_ring(self):
+        self.console.lock = True
+
         ring_line = [line for line in self.console.lines if line == 'RING\r\n']
         if ring_line:
             self.ring = True
@@ -80,6 +82,8 @@ class EasyA6(GA6Core):
         if stop_line:
             self.ring = False
             self._consume_line(stop_line)
+
+        self.console.lock = False
 
 
 ser = EasyA6(PORT, BAUD_RATE, timeout=READ_TIMEOUT)
