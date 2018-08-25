@@ -34,6 +34,7 @@ class EasyA6(GA6Core):
         while True:
             if result in self.console.lines and not sent:
                 sent = True
+                self._consume_line(result)
             elif 'OK\r\n' in self.console.lines and sent:
                 self._consume_line('OK\r\n')
                 break
@@ -74,7 +75,7 @@ class EasyA6(GA6Core):
             self.caller = re_result[0] if re_result else ''
             self._consume_line(caller_line)
 
-        stop = ['+CIEV:"CALL",0\r\n', 'NO CARRIER\r\n']
+        stop = ['+CIEV: "CALL",0\r\n', 'NO CARRIER\r\n']
         stop_line = [line for line in self.console.lines if line in stop]
         if stop_line:
             self.ring = False
