@@ -10,5 +10,5 @@ class Console(threading.Thread):
     def run(self):
         while True:
             line = self.ser.readline().decode()
-            if line != '\r\n' or line != '':
+            if line != '\r\n' and line != '':
                 self.lines.append(line)
