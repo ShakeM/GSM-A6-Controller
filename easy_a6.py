@@ -24,7 +24,7 @@ class EasyA6(GA6Core):
         self.wait(self.set_mode_pdu)
         content, code_len = PDUConverter.encode(self.smsc, recevier, content)
         self.wait(self.set_msg_len, code_len, response='> ')
-        self.wait(self.set_msg_content, content, response=content)
+        self.wait(self.set_msg_content, content, response=None)
         self.wait(self.send_msg, ignore='+CMGS: 0\r\n')
 
     def pick(self):
@@ -42,6 +42,8 @@ class EasyA6(GA6Core):
             if ignore in self.console.lines:
                 self._consume_line(ignore)
 
+            if not response:
+                break
             if response in self.console.lines and sent:
                 self._consume_line(response)
                 break
