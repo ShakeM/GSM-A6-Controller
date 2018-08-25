@@ -52,19 +52,33 @@ class EasyA6(GA6Core):
 
     def _consume_line(self, instruction):
         self.console.lock = True
-        while instruction in self.console.lines:
-            self.console.lines.remove(instruction)
+
+        if type(instruction) == str:
+            instruction = [instruction]
+
+        for i in instruction:
+            while i in self.console.lines:
+                self.console.lines.remove(instruction)
+
         self.console.lock = False
 
     def check_ring(self):
-        if 'RING\r\n' in self.console.lines:
+        ring_line = [line for line in self.console.lines if line == 'RING\r\n']
+        if ring_line:
             self.ring = True
-            self._consume_line('RING\r\n')
+            self._consume_line(ring_line)
 
         caller_line = [line for line in self.console.lines if '+CLIP:' in line]
         if caller_line:
             re_result = re.search('(?<=").*?(?=")', caller_line)
             self.caller = re_result[0] if re_result else ''
+            self._consume_line(caller_line)
+
+        stop = ['+CIEV:"CALL",0\r\n', 'NO CARRIER\r\n']
+        stop_line = [line for line in self.console.lines if line in stop]
+        if stop_line:
+            self.ring = False
+            self._consume_line(stop_line)
 
 
 ser = EasyA6(PORT, BAUD_RATE, timeout=READ_TIMEOUT)
