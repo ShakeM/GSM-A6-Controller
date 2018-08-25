@@ -21,26 +21,31 @@ class EasyA6(GA6Core):
         ## self.display_caller_id()
 
     def send(self, recevier, content):
-        self.set_mode_pdu()
+        self.wait(self.set_mode_pdu)
         content, code_len = PDUConverter.encode(self.smsc, recevier, content)
-        self.set_msg_len(code_len)
-        self.set_msg_content(content)
-        self.send_msg()
+        self.wait(self.set_msg_len, code_len, response='> ')
+        self.wait(self.set_msg_content, content)
+        self.wait(self.send_msg, ignore='+CMGS: 0\r\n')
 
     def pick(self):
         self.wait(self.pick_up)
 
-    def wait(self, foo, *args, timeout=RESPONSE_TIMEOUT):
+    def wait(self, foo, *args, response='OK\r\n', ignore='', timeout=RESPONSE_TIMEOUT):
         result = foo(*args)
 
         pass_time = 0
         sent = False
         while True:
+            self.console.lock = True
+
             if result in self.console.lines and not sent:
                 sent = True
                 self._consume_line(result)
-            elif 'OK\r\n' in self.console.lines and sent:
-                self._consume_line('OK\r\n')
+            if ignore in self.console.lines:
+                self._consume_line(ignore)
+
+            if response in self.console.lines and sent:
+                self._consume_line(response)
                 break
             elif [e for e in self.console.lines if 'ERROR' in e]:
                 errors = [e for e in self.console.lines if 'ERROR' in e]
@@ -51,6 +56,8 @@ class EasyA6(GA6Core):
             elif pass_time > timeout:
                 print('Inner log:', 'Timeout')
                 break
+
+            self.console.lock = False
 
             pass_time += 0.2
             time.sleep(0.2)
