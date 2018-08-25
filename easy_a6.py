@@ -34,17 +34,15 @@ class EasyA6(GA6Core):
         result = foo(*args)
 
         pass_time = 0
-        sent = False
         while True:
-            if result in self.console.lines and not sent:
-                sent = True
+            if result in self.console.lines:
                 self._consume_line(result)
             if ignore in self.console.lines:
                 self._consume_line(ignore)
 
             if not response:
                 break
-            if response in self.console.lines and sent:
+            elif response in self.console.lines:
                 self._consume_line(response)
                 break
             elif [e for e in self.console.lines if 'ERROR' in e]:
