@@ -36,8 +36,6 @@ class EasyA6(GA6Core):
         pass_time = 0
         sent = False
         while True:
-            self.console.lock = True
-
             if result in self.console.lines and not sent:
                 sent = True
                 self._consume_line(result)
@@ -56,8 +54,6 @@ class EasyA6(GA6Core):
             elif pass_time > timeout:
                 print('Inner log:', 'Timeout')
                 break
-
-            self.console.lock = False
 
             pass_time += 0.2
             time.sleep(0.2)
