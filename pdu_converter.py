@@ -1,12 +1,8 @@
 class PDUConverter:
 
-    # 上海联通中心号码SMSC 13010314500
     @classmethod
-    def encode(cls, smsc, receiver, content):
+    def encode(cls, smsc, receiver, content, long=False, content_header=''):
         receiver, content = str(receiver), str(content)
-        if len(content) > 70:
-            content = cls.split(content)
-
 
         smsc_info = {
             'number_length': '08',
@@ -16,7 +12,7 @@ class PDUConverter:
         }
 
         recevier_info = {
-            'base_parameter': '11',
+            'base_parameter': '11' if not long else '51',  # 长短信此处51
             'base_value': '00',
             'number_length': '0D',
             'number_type': '91',
@@ -28,17 +24,8 @@ class PDUConverter:
             'protocol': '00',
             'coding': '08',
             'effective_period': 'FF',
-            'content_length': hex(int(len(cls.to_hex(content)) / 2)).replace('0x', '').zfill(2),
-            'hex_content': cls.to_hex(content)
-        }
-
-        hex_content_head = {
-            'head_length': '05',
-            'type': '00',  # 长短信配置
-            'remain_length': '03',
-            'id': '',
-            'count': '',
-            'page': ''
+            'content_length': hex(int(len(content_header + cls.to_hex(content)) / 2)).replace('0x', '').zfill(2),
+            'hex_content': content_header + cls.to_hex(content)
         }
 
         recevier_info_len = len(''.join(recevier_info.values()))
@@ -47,6 +34,26 @@ class PDUConverter:
 
         code = ''.join(smsc_info.values()) + ''.join(recevier_info.values()) + ''.join(content_info.values())
         return code, code_len
+
+    @classmethod
+    def encode_long(cls, smsc, receiver, content):
+        sub_contents = cls.split(content)
+        content_header = {
+            'head_length': '05',
+            'type': '00',  # 长短信配置
+            'remain_length': '03',
+            'id': '0F',
+            'count': hex(len(sub_contents)).replace('0x', '').zfill(2),
+            'page': ''
+        }
+
+        result = []
+        for i, content in enumerate(sub_contents):
+            content_header['page'] = hex(i + 1).replace('0x', '').zfill(2)
+            content_header_str = ''.join(content_header.values())
+            code, code_len = cls.encode(smsc, receiver, content, long=True, content_header=content_header_str)
+            result.append((code, code_len))
+        return result
 
     @staticmethod
     def split(content):
@@ -57,7 +64,7 @@ class PDUConverter:
         while True:
             sub_content = content[n * 67:(n + 1) * 67]
             if sub_content:
-                result.append(sub_content)
+                result.append(''.join(sub_content))
             else:
                 return result
             n += 1
@@ -88,7 +95,7 @@ class PDUConverter:
 
 
 if __name__ == '__main__':
-    pdu = PDUConverter.encode('13010314500', '18516172878',
-                              'a你好我好大家好好大家好你好我好大家好你好我好大家好你好我好大家好你好我好大家好你好我好大家好你好我好大家好你好我好大家好')
-    pdu = PDUConverter.split('哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈')
+    pdu = PDUConverter.encode_long('13010314500', '18516172878',
+                                   'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
+
     print(pdu)
