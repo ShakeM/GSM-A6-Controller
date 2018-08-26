@@ -42,6 +42,8 @@ class EasyA6(GA6Core):
         pass_time = 0
         start = False
         while True:
+            self.console.lock = True
+
             if not start:
                 if start_signal in self.console.lines:
                     self._consume_line(start_signal)
@@ -63,6 +65,7 @@ class EasyA6(GA6Core):
                 print('Inner log:', 'Timeout. Start is ', str(start))
                 break
 
+            self.console.lock = True
             pass_time += 0.2
             time.sleep(0.2)
 
