@@ -30,8 +30,8 @@ class EasyA6(GA6Core):
 
         for z in content_len_zips:
             content, code_len = z
-            self.wait(self.set_msg_len, code_len, response='> ')
-            self.wait(self.send_msg, content, ignore=['+CMGS: 0\r\n', content + '\x1a'])
+            self.wait(self.set_msg_len, code_len)
+            self.wait(self.send_msg, content)
 
     def pick(self):
         self.wait(self.pick_up)
@@ -59,7 +59,7 @@ class EasyA6(GA6Core):
                         self._consume_line(e)
                     break
 
-            elif pass_time > timeout:
+            if pass_time > timeout:
                 print('Inner log:', 'Timeout. Start is ', str(start))
                 break
 
