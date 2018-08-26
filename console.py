@@ -9,8 +9,9 @@ class Console(threading.Thread):
         self.lock = False
 
     def run(self):
-        while True and not self.lock:
-            line = self.ser.readline().decode()
-            if line != '\r\n' and line != '':
-                self.lines.append(line)
-                print(line)
+        while True:
+            if not self.lock:
+                line = self.ser.readline().decode()
+                if line != '\r\n' and line != '':
+                    self.lines.append(line)
+                    print(line)
