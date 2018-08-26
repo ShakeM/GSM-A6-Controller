@@ -69,6 +69,8 @@ class EasyA6(GA6Core):
             pass_time += 0.2
             time.sleep(0.2)
 
+        self.console.lock = False
+
     def _consume_line(self, instruction):
         if type(instruction) == str:
             instruction = [instruction]
