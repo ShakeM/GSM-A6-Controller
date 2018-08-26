@@ -22,10 +22,17 @@ class EasyA6(GA6Core):
 
     def send(self, recevier, content):
         self.wait(self.set_mode_pdu)
-        content, code_len = PDUConverter.encode(self.smsc, recevier, content)
-        self.wait(self.set_msg_len, code_len, response='> ')
-        self.wait(self.set_msg_content, content, response=None)
-        self.wait(self.send_msg, ignore=['+CMGS: 0\r\n', content + '\x1a'])
+
+        if len(content) <= 70:
+            content_len_zips = [PDUConverter.encode(self.smsc, recevier, content)]
+        else:
+            content_len_zips = PDUConverter.encode_long(self.smsc, recevier, content)
+
+        for z in content_len_zips:
+            content, code_len = z
+            self.wait(self.set_msg_len, code_len, response='> ')
+            self.wait(self.set_msg_content, content, response=None)
+            self.wait(self.send_msg, ignore=['+CMGS: 0\r\n', content + '\x1a'])
 
     def pick(self):
         self.wait(self.pick_up)
