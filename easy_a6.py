@@ -31,36 +31,36 @@ class EasyA6(GA6Core):
         for z in content_len_zips:
             content, code_len = z
             self.wait(self.set_msg_len, code_len, response='> ')
-            self.wait(self.set_msg_content, content, response=None)
-            self.wait(self.send_msg, ignore=['+CMGS: 0\r\n', content + '\x1a'])
+            self.wait(self.send_msg, content, ignore=['+CMGS: 0\r\n', content + '\x1a'])
 
     def pick(self):
         self.wait(self.pick_up)
 
-    def wait(self, foo, *args, response='OK\r\n', ignore=[], timeout=RESPONSE_TIMEOUT):
-        result = foo(*args)
+    def wait(self, foo, *args, timeout=RESPONSE_TIMEOUT):
+        start_signal, finish_signal = foo(*args)
 
         pass_time = 0
+        start = False
         while True:
-            if result in self.console.lines:
-                self._consume_line(result)
-            for i in ignore:
-                if i in self.console.lines:
-                    self._consume_line(i)
+            if not start:
+                if start_signal in self.console.lines:
+                    self._consume_line(start_signal)
+                    start = True
 
-            if not response:
-                break
-            elif response in self.console.lines:
-                self._consume_line(response)
-                break
-            elif [e for e in self.console.lines if 'ERROR' in e]:
-                errors = [e for e in self.console.lines if 'ERROR' in e]
-                print('Inner log:', errors)
-                for e in errors:
-                    self._consume_line(e)
-                break
+            elif start:
+                if finish_signal in self.console.lines:
+                    self._consume_line(finish_signal)
+                    break
+
+                elif [e for e in self.console.lines if 'ERROR' in e]:
+                    errors = [e for e in self.console.lines if 'ERROR' in e]
+                    print('Inner log:', errors)
+                    for e in errors:
+                        self._consume_line(e)
+                    break
+
             elif pass_time > timeout:
-                print('Inner log:', 'Timeout')
+                print('Inner log:', 'Timeout. Start is ', str(start))
                 break
 
             pass_time += 0.2
