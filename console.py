@@ -8,10 +8,11 @@ class Console(threading.Thread):
         self.lines = []
         self.lock = False
 
-    def run(self):
+    def run(self, output=True):
         while True:
             if not self.lock:
                 line = self.ser.readline().decode()
                 if line != '\r\n' and line != '':
                     self.lines.append(line)
-                    print(line)
+                    if output:
+                        print(line)
