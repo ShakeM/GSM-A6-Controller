@@ -1,6 +1,6 @@
 from config import *
 from core import GA6Core
-from pdu_converter import PDUConverter
+from pdu import PDU
 from console import Console
 import time
 import re
@@ -24,9 +24,9 @@ class EasyA6(GA6Core):
         self.wait(self.set_mode_pdu)
 
         if len(content) <= 70:
-            content_len_zips = [PDUConverter.encode(self.smsc, recevier, content)]
+            content_len_zips = [PDU.encode(self.smsc, recevier, content)]
         else:
-            content_len_zips = PDUConverter.encode_long(self.smsc, recevier, content)
+            content_len_zips = PDU.encode_long(self.smsc, recevier, content)
 
         for z in content_len_zips:
             content, code_len = z

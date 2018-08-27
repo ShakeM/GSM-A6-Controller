@@ -1,4 +1,7 @@
-class PDUConverter:
+from smspdu.easy import easy_sms
+
+
+class PDU:
 
     @classmethod
     def encode(cls, smsc, receiver, content, long=False, content_header=''):
@@ -55,6 +58,14 @@ class PDUConverter:
             result.append((code, code_len))
         return result
 
+    @classmethod
+    def decode(cls, data: str) -> str:
+        try:
+            return easy_sms(data)
+        except ValueError:
+            print('解析失败')
+            return data
+
     @staticmethod
     def split(content):
         content = list(content)
@@ -95,7 +106,10 @@ class PDUConverter:
 
 
 if __name__ == '__main__':
-    pdu = PDUConverter.encode_long('13010314500', '18516172878',
-                                   'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
+    pdu = PDU.encode_long('13010314500', '18516172878',
+                          'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
 
+    print(pdu)
+
+    pdu = PDU.decode('0891683110304105F26405A10110F00008818072112414238B060804CC05020130106D4191CF63D091923011FF084E0D542B65E56D4191CF530553CA56FD9645300153F06E2F6FB36D4191CFFF09FF0C622A81F30030003867080032003665E50032003465F6FF0C60A85F53670859579910518556FD5185901A75286D4191CF5DF27528003100300037002E0033004D0042FF0C52694F59003100380038002E0036004D')
     print(pdu)
