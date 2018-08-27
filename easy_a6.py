@@ -33,8 +33,14 @@ class EasyA6(GA6Core):
             self.wait(self.set_msg_len, code_len)
             self.wait(self.send_msg, content)
 
+    def call(self, num):
+        self.wait(self.dial, num)
+
     def pick(self):
         self.wait(self.pick_up)
+
+    def hang(self):
+        self.wait(self.hang_up)
 
     def wait(self, foo, *args, timeout=RESPONSE_TIMEOUT):
         start_signal, finish_signal = foo(*args)
@@ -84,7 +90,7 @@ class EasyA6(GA6Core):
 
         ring_line = [line for line in self.console.lines if line == 'RING\r\n']
         if ring_line:
-            self.status = RING
+            self.status = RING_IN
             self._consume_line(ring_line)
 
         caller_line = [line for line in self.console.lines if '+CLIP:' in line]
@@ -97,7 +103,7 @@ class EasyA6(GA6Core):
         talk = ['+CIEV: "CALL",1\r\n', 'CONNECT\r\n']
         talk_line = [line for line in self.console.lines if line in talk]
         if talk_line:
-            self.status = TALK
+            self.status = SPEAKING
             self._consume_line(talk_line)
 
         stop = ['+CIEV: "CALL",0\r\n', 'NO CARRIER\r\n']
