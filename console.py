@@ -39,7 +39,7 @@ class Console(threading.Thread):
             return IDLE
 
     def get_caller(self):
-        phone_number = self._check_caller().replace('+CLIP: ', '')
+        phone_number = self._check_caller()
         return phone_number
 
     def _check_ring_in(self):
