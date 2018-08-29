@@ -32,7 +32,6 @@ class Handler(Thread):
                     self.ring_in_hang_handler()
                 elif self.compare_status(RING_OUT_HANG_EVENT):
                     self.ring_out_hang_handler()
-                else:
 
     def push_new_status(self, status):
         self.status_heap.insert(0, status)
