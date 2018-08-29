@@ -9,15 +9,13 @@ import time
 class EasyA6(GA6Core):
     smsc = SMSC
 
-    # Telephone status
-    IDLE = 'IDLE'
-    RING = 'RING'
-    SPEAKING = 'SPEAKING'
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.status = 'IDLE'
+        self.status = IDLE
+        self.caller = None
+
         self.handler = Handler(self)
+        self.handler.start()
 
         self.console = Console(self)
         self.console.start()
@@ -61,10 +59,11 @@ class EasyA6(GA6Core):
                     start = True
 
             elif start:
-                if finish_signal in self.console.lines:
+                if not finish_signal:
+                    break
+                elif finish_signal in self.console.lines:
                     self.console.consume_line(finish_signal)
                     break
-
                 elif [e for e in self.console.lines if 'ERROR' in e]:
                     errors = [e for e in self.console.lines if 'ERROR' in e]
                     print('Inner log:', errors)

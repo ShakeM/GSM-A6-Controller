@@ -96,7 +96,7 @@ class GA6Core(serial.Serial):
     def pick_up(self):
         instruction = b'ATA\r\n'
         self.write(instruction)
-        return instruction.decode(), 'CONNECT\r\n'
+        return instruction.decode(), None
 
     def hang_up(self):
         instruction = b'ATH\r\n'
