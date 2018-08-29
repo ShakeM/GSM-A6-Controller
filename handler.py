@@ -20,8 +20,6 @@ class Handler(Thread):
 
     def run(self):
         while True:
-            time.sleep(0.2)
-
             if self.status_heap[0] == self.ser.status:
                 pass
             else:
