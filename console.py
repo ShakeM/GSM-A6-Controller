@@ -39,6 +39,8 @@ class Console(threading.Thread):
             return RING_OUT
         elif self._check_hang():
             return IDLE
+        else:
+            return self.ser.status
 
     def get_caller(self):
         phone_number = self._check_caller()
