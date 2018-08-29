@@ -49,8 +49,8 @@ class Handler(Thread):
         self.status_heap.pop()
 
     def compare_status(self, model):
-        for i in range(len(model)):
-            if model[i] == self.status_heap:
+        for i in len(model):
+            if model[i] == self.status_heap[i]:
                 continue
             else:
                 return False
