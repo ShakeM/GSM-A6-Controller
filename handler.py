@@ -1,5 +1,6 @@
 from threading import Thread
 from config import *
+import time
 
 RING_IN = [RING_IN, IDLE]
 RING_OUT = [RING_OUT, IDLE]
@@ -19,6 +20,8 @@ class Handler(Thread):
 
     def run(self):
         while True:
+            time.sleep(0.2)
+
             if self.status_heap[0] == self.ser.status:
                 pass
             else:
@@ -43,7 +46,7 @@ class Handler(Thread):
 
     def push_new_status(self, status):
         self.status_heap.insert(0, status)
-        self.pop()
+        self.status_heap.pop()
 
     def compare_status(self, model):
         for i in range(len(model)):
