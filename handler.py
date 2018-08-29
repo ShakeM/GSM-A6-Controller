@@ -22,7 +22,8 @@ class Handler(Thread):
             if self.status_heap[0] == self.ser.status:
                 pass
             else:
-                self.status_heap = [self.ser.status, self.status_heap[0]]
+                self.push_new_status(self.ser.status)
+
                 if self.compare_status(RING_IN):
                     self.ring_in_handler()
                 elif self.compare_status(RING_OUT):
