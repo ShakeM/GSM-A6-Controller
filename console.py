@@ -35,6 +35,8 @@ class Console(threading.Thread):
             return RING_IN
         elif self._check_pick():
             return SPEAKING
+        elif self._check_ring_out():
+            return RING_OUT
         elif self._check_hang():
             return IDLE
 

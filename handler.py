@@ -16,7 +16,7 @@ class Handler(Thread):
     def __init__(self, serial):
         super().__init__()
         self.ser = serial
-        self.status_heap = [IDLE for _ in range(3)]
+        self.status_heap = [None for _ in range(3)]
 
     def run(self):
         while True:
