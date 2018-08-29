@@ -2,15 +2,6 @@ from threading import Thread
 from config import *
 import time
 
-RING_IN = [RING_IN, IDLE]
-RING_OUT = [RING_OUT, IDLE]
-RING_IN_MISS = [IDLE, RING_IN]
-RING_OUT_MISS = [IDLE, RING_OUT]
-RING_IN_SPEAK = [SPEAKING, RING_IN]
-RING_OUT_SPEAK = [SPEAKING, RING_OUT]
-RING_IN_HANG = [IDLE, SPEAKING, RING_IN]
-RING_OUT_HANG = [IDLE, SPEAKING, RING_OUT]
-
 
 class Handler(Thread):
     def __init__(self, serial):
@@ -25,22 +16,23 @@ class Handler(Thread):
             else:
                 self.push_new_status(self.ser.status)
 
-                if self.compare_status(RING_IN):
+                if self.compare_status(RING_IN_EVENT):
                     self.ring_in_handler()
-                elif self.compare_status(RING_OUT):
+                elif self.compare_status(RING_OUT_EVENT):
                     self.ring_out_handler()
-                elif self.compare_status(RING_IN_MISS):
+                elif self.compare_status(RING_IN_MISS_EVENT):
                     self.ring_in_miss_handler()
-                elif self.compare_status(RING_OUT_MISS):
+                elif self.compare_status(RING_OUT_MISS_EVENT):
                     self.ring_out_miss_handler()
-                elif self.compare_status(RING_IN_SPEAK):
+                elif self.compare_status(RING_IN_SPEAK_EVENT):
                     self.ring_in_speak_handler()
-                elif self.compare_status(RING_OUT_SPEAK):
+                elif self.compare_status(RING_OUT_SPEAK_EVENT):
                     self.ring_out_speak_handler()
-                elif self.compare_status(RING_IN_HANG):
+                elif self.compare_status(RING_IN_HANG_EVENT):
                     self.ring_in_hang_handler()
-                elif self.compare_status(RING_OUT_HANG):
+                elif self.compare_status(RING_OUT_HANG_EVENT):
                     self.ring_out_hang_handler()
+                else:
 
     def push_new_status(self, status):
         self.status_heap.insert(0, status)
