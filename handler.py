@@ -1,5 +1,6 @@
 from threading import Thread
 from config import *
+from g import *
 import time
 
 

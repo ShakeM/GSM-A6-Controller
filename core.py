@@ -1,7 +1,8 @@
 import serial
 
 
-# return (start_signal,finish_signal)
+# All functions in core follow the form as follow:
+# def foo -> (instruction, correct_feedback)
 class GA6Core(serial.Serial):
     def check_signal(self):
         instruction = b'AT\r\n'

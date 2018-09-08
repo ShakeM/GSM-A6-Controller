@@ -1,16 +1,21 @@
 from config import *
+from g import *
 from core import GA6Core
 from pdu import PDU
 from console import Console
 from handler import Handler
 import time
 
+__all__ = ['EasyGSM']
 
-class EasyA6(GA6Core):
-    smsc = SMSC
 
-    def __init__(self, *args, **kwargs):
+class EasyGSM:
+
+    def __init__(self, core, *args, smsc=None, readTime, **kwargs):
         super().__init__(*args, **kwargs)
+        self.smsc = smsc
+        self.core = core
+
         self.status = IDLE
         self.caller = None
 
@@ -20,11 +25,11 @@ class EasyA6(GA6Core):
         self.console = Console(self)
         self.console.start()
 
-        self.wait(self.check_signal)
+        self.wait(core.check_signal)
         ## self.display_caller_id()
 
     def send(self, recevier, content):
-        self.wait(self.set_mode_pdu)
+        self.wait(self.core.set_mode_pdu)
 
         if len(content) <= 70:
             content_len_zips = [PDU.encode(self.smsc, recevier, content)]
@@ -33,17 +38,17 @@ class EasyA6(GA6Core):
 
         for z in content_len_zips:
             content, code_len = z
-            self.wait(self.set_msg_len, code_len)
-            self.wait(self.send_msg, content)
+            self.wait(self.core.set_msg_len, code_len)
+            self.wait(self.core.send_msg, content)
 
     def call(self, num):
-        self.wait(self.dial, num)
+        self.wait(self.core.dial, num)
 
     def pick(self):
-        self.wait(self.pick_up)
+        self.wait(self.core.pick_up)
 
     def hang(self):
-        self.wait(self.hang_up)
+        self.wait(self.core.hang_up)
 
     def wait(self, foo, *args, timeout=RESPONSE_TIMEOUT):
         start_signal, finish_signal = foo(*args)
@@ -82,4 +87,4 @@ class EasyA6(GA6Core):
         self.console.lock = False
 
 
-ser = EasyA6(PORT, BAUD_RATE, timeout=READ_TIMEOUT)
+ser = EasyGSM(GA6Core, PORT, BAUD_RATE, timeout=READ_TIMEOUT)
