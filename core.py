@@ -4,7 +4,16 @@ import serial
 # All functions in core follow the form as follow:
 # def foo -> (instruction, correct_feedback)
 class GA6Core(serial.Serial):
-    def check_signal(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.ring_in_lines = ['RING\r\n']
+        self.ring_out_lines = ['+CIEV: "SOUNDER",1\r\n', '+CIEV: "SOUNDER",0\r\n']
+        self.pick_lines = ['+CIEV: "CALL",1\r\n', 'CONNECT\r\n']
+        self.hang_lines = ['+CIEV: "CALL",0\r\n', 'NO CARRIER\r\n']
+        self.caller_lines = ['+CLIP:.*']
+
+    def check_wire(self):
         instruction = b'AT\r\n'
         self.write(instruction)
         return instruction.decode(), 'OK\r\n'
