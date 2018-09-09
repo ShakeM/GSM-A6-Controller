@@ -27,7 +27,7 @@ class EasyGSM:
         # self.handler = event_handler_cls(self)
         # self.handler.start()
 
-        self.wait(core_cls.check_wire)
+        self.wait(self.core.check_wire)
         ## self.display_caller_id()
 
     def send(self, recevier, content):
