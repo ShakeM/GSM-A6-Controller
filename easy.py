@@ -11,12 +11,11 @@ __all__ = ['EasyGSM']
 
 class EasyGSM:
 
-    def __init__(self, core, smsc, *args,
+    def __init__(self, core_cls, smsc, *args,
                  line_buffer_cls=LineBuffer,
                  # event_handler_cls=EventHandler,
                  **kwargs):
-        super().__init__(*args, **kwargs)
-        self.core = core
+        self.core = core_cls(*args, **kwargs)
         self.smsc = smsc
 
         self.status_heap = [None, None, None]
@@ -28,7 +27,7 @@ class EasyGSM:
         # self.handler = event_handler_cls(self)
         # self.handler.start()
 
-        self.wait(core.check_wire)
+        self.wait(core_cls.check_wire)
         ## self.display_caller_id()
 
     def send(self, recevier, content):
